@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuarios</title>
+</head>
+<body>
+<nav>
+    <a th:href="@{/usuarios}">Usuarios</a> |
+    <a th:href="@{/alumnos}">Alumnos</a>
+</nav>
+<hr/>
+
+<h1>Usuarios</h1>
+
+<h2 th:text="${usuarioForm != null && usuarioForm.id != null} ? 'Editar usuario' : 'Crear usuario'">Crear usuario</h2>
+<form th:if="${usuarioForm != null && usuarioForm.id != null}" th:action="@{'/usuarios/' + ${usuarioForm.id} + '/actualizar'}" th:object="${usuarioForm}" method="post"> 
+    <div>
+        <label>Nombre</label>
+        <input type="text" th:field="*{nombre}" required />
+    </div>
+    <div>
+        <label>Username</label>
+        <input type="text" th:field="*{username}" required />
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" th:field="*{password}" required />
+    </div>
+    <div>
+        <label>Email</label>
+        <input type="email" th:field="*{email}" />
+    </div>
+    <button type="submit">Actualizar</button>
+</form>
+
+<form th:if="${usuarioForm == null || usuarioForm.id == null}" th:action="@{/usuarios/crear}" th:object="${usuarioForm}" method="post">
+    <div>
+        <label>Nombre</label>
+        <input type="text" th:field="*{nombre}" required />
+    </div>
+    <div>
+        <label>Email</label>
+        <input type="email" th:field="*{email}" />
+    </div>
+    <div>
+        <label>Username</label>
+        <input type="text" th:field="*{username}" required />
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" th:field="*{password}" required />
+    </div>
+    <button type="submit">Guardar</button>
+</form>
+
+
+<h2>Lista</h2>
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Alumnos</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="u : ${usuarios}">
+        <td th:text="${u.id}"></td>
+        <td th:text="${u.nombre}"></td>
+        <td th:text="${u.email}"></td>
+        <td th:text="${u.alumnos != null ? u.alumnos.size() : 0}"></td>
+        <td>
+            <a th:href="@{'/usuarios/' + ${u.id} + '/editar'}">Editar</a>
+            <form th:action="@{'/usuarios/' + ${u.id} + '/eliminar'}" method="post" onsubmit="return confirm('¿Eliminar usuario?');" style="display:inline-block;">
+                <button type="submit">Eliminar</button>
+            </form>
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumnos</title>
+</head>
+<body>
+<nav>
+    <a th:href="@{/usuarios}">Usuarios</a> |
+    <a th:href="@{/alumnos}">Alumnos</a>
+</nav>
+<hr/>
+
+<h1>Alumnos</h1>
+
+<h2 th:text="${alumnoForm != null && alumnoForm.id != null} ? 'Editar alumno' : 'Crear alumno'">Crear alumno</h2>
+
+<form th:if="${alumnoForm != null && alumnoForm.id != null}" th:action="@{'/alumnos/' + ${alumnoForm.id} + '/actualizar'}" th:object="${alumnoForm}" method="post">
+    <div>
+        <label>Nombre</label>
+        <input type="text" th:field="*{nombre}" required />
+    </div>
+    <div>
+        <label>Matrícula</label>
+        <input type="text" th:field="*{matricula}" />
+    </div>
+    <div>
+        <label>Usuario</label>
+        <select name="usuarioId" required>
+            <option value="" disabled>-- Seleccione --</option>
+            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}" th:selected="${alumnoForm != null && alumnoForm.usuario != null && alumnoForm.usuario.id == u.id}"></option>
+        </select>
+    </div>
+    <button type="submit">Actualizar</button>
+</form>
+
+<form th:if="${alumnoForm == null || alumnoForm.id == null}" th:action="@{/alumnos/crear}" th:object="${alumnoForm}" method="post">
+    <div>
+        <label>Nombre</label>
+        <input type="text" th:field="*{nombre}" required />
+    </div>
+    <div>
+        <label>Matrícula</label>
+        <input type="text" th:field="*{matricula}" />
+    </div>
+    <div>
+        <label>Usuario</label>
+        <select name="usuarioId" required>
+            <option value="" disabled selected>-- Seleccione --</option>
+            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}" th:selected="${alumnoForm != null && alumnoForm.usuario != null && alumnoForm.usuario.id == u.id}"></option>
+        </select>
+    </div>
+    <button type="submit">Guardar</button>
+</form>
+
+<h2>Lista</h2>
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Matrícula</th>
+        <th>Usuario</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="a : ${alumnos}">
+        <td th:text="${a.id}"></td>
+        <td th:text="${a.nombre}"></td>
+        <td th:text="${a.matricula}"></td>
+        <td th:text="${a.usuario != null ? a.usuario.nombre : ''}"></td>
+        <td>
+            <a th:href="@{'/alumnos/' + ${a.id} + '/editar'}">Editar</a>
+            <form th:action="@{'/alumnos/' + ${a.id} + '/eliminar'}" method="post" onsubmit="return confirm('¿Eliminar alumno?');" style="display:inline-block;">
+                <button type="submit">Eliminar</button>
+            </form>
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
