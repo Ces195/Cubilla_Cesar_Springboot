@@ -24,21 +24,10 @@ public class AuthFilter implements Filter {
         String path = req.getRequestURI();
 
         // Permitir accesos públicos
-        boolean isPublic = path.startsWith("/login") || path.equals("/" ) || path.equals("/index") || path.startsWith("/css") || path.startsWith("/js") || path.startsWith("/images");
-        boolean isIndex = path.equals("/index");
+        boolean isPublic = path.startsWith("/login") || path.equals("/") || path.equals("/index") || path.startsWith("/css") || path.startsWith("/js") || path.startsWith("/images");
 
         HttpSession session = req.getSession(false);
         boolean loggedIn = session != null && session.getAttribute("userId") != null;
-
-        if (isPublic && !loggedIn) {
-            // /index redirige a login si no hay sesión
-            if (isIndex) {
-                res.sendRedirect("/login?error=1");
-                return;
-            }
-            chain.doFilter(request, response);
-            return;
-        }
 
         if (path.startsWith("/usuarios") || path.startsWith("/alumnos")) {
             if (!loggedIn) {
@@ -50,4 +39,3 @@ public class AuthFilter implements Filter {
         chain.doFilter(request, response);
     }
 }
-
